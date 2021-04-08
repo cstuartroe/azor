@@ -1,0 +1,70 @@
+map : {A, B} [B](f : B(A), l : [A])
+  = if head ~ tail <- l
+    then f(head) ~ map{A, B}(f, tail)
+    else [] of B
+
+filter : {A} [A](f : BOOL(A), l : [A])
+  = if head ~ tail <- l
+    then let new_tail <- filter{A}(f, tail)
+         in if f(head)
+            then head ~ new_tail
+            else new_tail
+    else [] of A
+
+reduce : {A, B} B(f : B(A, B), l : [A], seed : B)
+  = if head ~ tail <- l
+    then let new_seed <- f(head, seed)
+         in reduce{A, B}(f, tail, new_seed)
+    else seed
+
+zip : {A, B} [(A, B)](l1 : [A], l2 : [B])
+  = if head1 ~ tail1 <- l1
+    then if head2 ~ tail2 <- l2
+         then (head1, head2) ~ zip{A, B}(tail1, tail2)
+         else [] of (A, B)
+    else [] of (A, B)
+
+println : [INT](s : [INT])
+  = let _ <- print(s) in
+    let __ <- print([13, 10]) in
+    s
+
+reverseHelper : {A} [A](l1 : [A], l2 : [A])
+  = if head ~ tail <- l1
+    then reverseHelper{A}(tail, head ~ l2)
+    else l2
+
+reverse : {A} [A](l : [A])
+  = reverseHelper{A}(l, [] of A)
+
+asciiDigitOffset : INT = 48
+
+i2sHelper : [INT](n : INT)
+  = let lastDigit <- n % 10 in
+    if n < 10
+    then [lastDigit + asciiDigitOffset]
+    else (lastDigit + asciiDigitOffset) ~ i2sHelper(n / 10)
+
+i2s : [INT](n : INT) = reverse{INT}(i2sHelper(n))
+
+b2s : [INT](b: BOOL) = if b then "true" else "false"
+
+concat : {A} [A](l1 : [A], l2 : [A])
+  = if first ~ rest <- l1
+    then first ~ concat{A}(rest, l2)
+    else l2
+
+range : [INT](n : INT)
+  = if n <= 0
+    then [] of INT
+    else (n - 1) ~ range(n - 1)
+
+all : BOOL(l : [BOOL])
+  = if head ~ tail <- l
+    then if head then all(tail) else false
+    else true
+
+any : BOOL(l : [BOOL])
+  = if head ~ tail <- l
+    then if head then true else any(tail)
+    else false
