@@ -57,6 +57,34 @@ Unicode code point. For example, `print([72, 105, 33])` will output `Hi!` to std
 Azor also supports string literals, which are simply evaluated to lists of integers. For example, the Azor literal `"Hi!"` evaluates to the
 same thing as the expression `[72, 105, 33]`.
 
+### Type inference
+
+Azor does *not* have full Haskell-style type inference, but it does do some basic type deduction
+on constants and function return types:
+
+```
+important_number = 42
+
+square(n : INT) = n ** 2
+```
+
+Azor does not allow recursion or mutual recursion among implicitly typed functions, and implementations
+should catch such violations and gracefully fail rather than entering an infinite loop. It should be
+fairly apparent recursive type inference is not tractable in general:
+
+```
+foo = foo
+```
+
+This is an obviously unsolvable example, and there are more complex cases where a human or a better type checker would
+be able to figure out the intended type:
+
+```
+triangular(n : INT) = if n == 0 then 0 else n + triangular(n - 1)
+```
+
+but I'm not going to try to optimize type inference any further.
+
 ### File structure
 
 Azor files are simply a sequence of declarations. The order of declarations does not impact execution of the file in any way. 
@@ -105,13 +133,6 @@ but I don't enjoy making a completely useless language so some features made it 
 * Command line arguments
   * I actually think I'm likely to implement this, simply because it wouldn't add much overhead but would make the language
     much more practical as a scripting language.
-
-* Type inference
-  * I would never try to do something like Haskell's type inference system, but basic type deduction would reduce a lot of bloat.
-    It feels kinda dumb to write a type annotation for something like `some_const : INT = 42`. I actually drafted an implementation,
-    but scrapped it when I realized that it causes the order of type-checking to matter for implicitly-typed functions that use other
-    globally-scoped functions. I think I might resurrect that attempt at type inference because it worked fine for constants and many
-    functions, and I'll just make weak/vague guarantees about type inference on functions that use other functions.
 
 * Anonymous functions
 

@@ -37,7 +37,7 @@ reverseHelper : {A} [A](l1 : [A], l2 : [A])
 reverse : {A} [A](l : [A])
   = reverseHelper{A}(l, [] of A)
 
-asciiDigitOffset : INT = 48
+asciiDigitOffset = 48
 
 i2sHelper : [INT](n : INT)
   = let lastDigit <- n % 10 in

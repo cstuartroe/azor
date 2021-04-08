@@ -1,6 +1,6 @@
 fib : INT(n : INT) = let (l, r) <- fibHelper(n) in l
 
-tup : (INT, INT) = (2, 50)
+tup = (2, 50)
 
 fibHelper : (INT, INT)(n : INT) = if n == 0
                                   then (0, 1)
@@ -18,9 +18,9 @@ int_array_to_str : [INT](l : [INT])
     )
     else [] of INT
 
-square : INT(n : INT) = n ** 2
+square(n : INT) = n ** 2
 
-main : INT
+main
   = let _ <- println(int_array_to_str(map{INT, INT}(square, range(10)))) in
     let __ <- println(b2s(true)) in
     0
