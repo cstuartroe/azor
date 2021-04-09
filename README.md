@@ -124,6 +124,12 @@ I did make the implementation of generics a bit easier by requiring that generic
 is_evens : [BOOL] = map{INT, BOOL}(is_even, [1, 3, 5, 6])
 ```
 
+Generic functions can actually be resolved anywhere, not just when called:
+
+```
+map_ints_to_ints = map{INT, INT}
+```
+
 ### Features I have considered and (for the time being) declined to add
 
 Deciding which features to include in Azor was a balancing act between making the language useful and making it easy to implement. 
