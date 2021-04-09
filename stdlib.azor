@@ -1,9 +1,9 @@
-map : {A, B} [B](f : B(A), l : [A])
+map{A, B} : [B](f : B(A), l : [A])
   = if head ~ tail <- l
     then f(head) ~ map{A, B}(f, tail)
     else [] of B
 
-filter : {A} [A](f : BOOL(A), l : [A])
+filter{A} : [A](f : BOOL(A), l : [A])
   = if head ~ tail <- l
     then let new_tail <- filter{A}(f, tail)
          in if f(head)
@@ -11,13 +11,13 @@ filter : {A} [A](f : BOOL(A), l : [A])
             else new_tail
     else [] of A
 
-reduce : {A, B} B(f : B(A, B), l : [A], seed : B)
+reduce{A, B} : B(f : B(A, B), l : [A], seed : B)
   = if head ~ tail <- l
     then let new_seed <- f(head, seed)
          in reduce{A, B}(f, tail, new_seed)
     else seed
 
-zip : {A, B} [(A, B)](l1 : [A], l2 : [B])
+zip{A, B} : [(A, B)](l1 : [A], l2 : [B])
   = if head1 ~ tail1 <- l1
     then if head2 ~ tail2 <- l2
          then (head1, head2) ~ zip{A, B}(tail1, tail2)
@@ -29,12 +29,12 @@ println : [INT](s : [INT])
     let __ <- print([13, 10]) in
     s
 
-reverseHelper : {A} [A](l1 : [A], l2 : [A])
+reverseHelper{A} : [A](l1 : [A], l2 : [A])
   = if head ~ tail <- l1
     then reverseHelper{A}(tail, head ~ l2)
     else l2
 
-reverse : {A} [A](l : [A])
+reverse{A} : [A](l : [A])
   = reverseHelper{A}(l, [] of A)
 
 asciiDigitOffset = 48
@@ -49,7 +49,7 @@ i2s : [INT](n : INT) = reverse{INT}(i2sHelper(n))
 
 b2s : [INT](b: BOOL) = if b then "true" else "false"
 
-concat : {A} [A](l1 : [A], l2 : [A])
+concat{A} : [A](l1 : [A], l2 : [A])
   = if first ~ rest <- l1
     then first ~ concat{A}(rest, l2)
     else l2

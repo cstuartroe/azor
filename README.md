@@ -112,7 +112,7 @@ feature of Go and I think it would be even less tenable in a high-level function
 Azor uses curly braces for generics:
 
 ```
-map : {A, B} [B](f : B(A), l : [A])
+map{A, B} : [B](f : B(A), l : [A])
   = if head ~ tail <- l
     then f(head) ~ map{A, B}(f, tail)
     else [] of B
