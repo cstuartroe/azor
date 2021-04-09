@@ -8,8 +8,11 @@ fib : INT(n : INT) = let (l, r) <- fibHelper(n) in l
 
 square(n : INT) = n ** 2
 
-main
+ident(a : [INT]) = a
+
+main(args: [[INT]])
   = let squares <- map{INT, INT}(square, range(-10, 10)) in
     let _ <- println(l2s{INT}(squares, i2s)) in
     let __ <- println(i2s(fib(10))) in
+    let ___ <- println(l2s{[INT]}(args, ident)) in
     0

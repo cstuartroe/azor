@@ -90,9 +90,9 @@ but I'm not going to try to optimize type inference any further.
 Azor files are simply a sequence of declarations. The order of declarations does not impact execution of the file in any way. 
 Azor does not support modules, namespaces, or file imports.
 
-For a file to be executable, it must declare a constant called `main` of type `INT`. Executing an Azor file involves evaluating `main` and
-exiting with its value as the exit status. In future, I may change the type of `main` to be a function which accepts an argument of type
-`[INT]`, representing the argstring passed into the process.
+For a file to be executable, it must declare a function called `main` of type `INT(args : [[INT]])`.
+Executing an Azor file involves passing the command-line arguments to `main`, evaluating the function,
+and exiting with its return value as the exit status.
 
 Although the full file is type-checked prior to execution, evaluation is lazy, meaning that e.g. executing the following file would not
 result in an infinite loop:
@@ -129,10 +129,6 @@ is_evens : [BOOL] = map{INT, BOOL}(is_even, [1, 3, 5, 6])
 Deciding which features to include in Azor was a balancing act between making the language useful and making it easy to implement. 
 I think the latter consideration should be more heavily prioritized for this project, so I tried to show restraint in adding features,
 but I don't enjoy making a completely useless language so some features made it off this list (e.g., generics) or might at some point.
-
-* Command line arguments
-  * I actually think I'm likely to implement this, simply because it wouldn't add much overhead but would make the language
-    much more practical as a scripting language.
 
 * Anonymous functions
 
