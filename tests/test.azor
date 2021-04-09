@@ -1,26 +1,15 @@
+fibHelper : (INT, INT)(n : INT)
+  = if n == 0
+    then (0, 1)
+    else let (l, r) <- fibHelper(n - 1) in
+         (r, l + r)
+
 fib : INT(n : INT) = let (l, r) <- fibHelper(n) in l
-
-tup = (2, 50)
-
-fibHelper : (INT, INT)(n : INT) = if n == 0
-                                  then (0, 1)
-                                  else
-                                      let (l, r) <- fibHelper(n - 1)
-                                      in (r, l + r)
-
-fib50 : INT = let (a, b) <- tup in fib(b)
-
-int_array_to_str : [INT](l : [INT])
-  = if first ~ rest <- l
-    then concat{INT}(
-      concat{INT}(i2s(first), [44, 32]),
-      int_array_to_str(rest),
-    )
-    else [] of INT
 
 square(n : INT) = n ** 2
 
 main
-  = let _ <- println(int_array_to_str(map{INT, INT}(square, range(10)))) in
-    let __ <- println(b2s(true)) in
+  = let squares <- map{INT, INT}(square, range(-10, 10)) in
+    let _ <- println(l2s{INT}(squares, i2s)) in
+    let __ <- println(i2s(fib(10))) in
     0
