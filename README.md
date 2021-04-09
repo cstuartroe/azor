@@ -43,7 +43,8 @@ all : BOOL(l : [BOOL])
     else true
 ```
 
-Azor is not whitespace-sensitive. 
+Azor is not whitespace-sensitive. Line comments are preceded by `#`, and block
+comments do not exist.
 
 Check out [stdlib.azor](stdlib.azor) to see examples of Azor syntax.
 
@@ -85,24 +86,6 @@ triangular(n : INT) = if n == 0 then 0 else n + triangular(n - 1)
 
 but I'm not going to try to optimize type inference any further.
 
-### File structure
-
-Azor files are simply a sequence of declarations. The order of declarations does not impact execution of the file in any way. 
-Azor does not support modules, namespaces, or file imports.
-
-For a file to be executable, it must declare a function called `main` of type `INT(args : [[INT]])`.
-Executing an Azor file involves passing the command-line arguments to `main`, evaluating the function,
-and exiting with its return value as the exit status.
-
-Although the full file is type-checked prior to execution, evaluation is lazy, meaning that e.g. executing the following file would not
-result in an infinite loop:
-
-```
-foo : BOOL = foo
-
-main : INT = 0
-```
-
 ### Generics
 
 Azor does support generic functions. I was on the fence about this decision; in general, I tried to avoid including any advanced features
@@ -128,6 +111,24 @@ Generic functions can actually be resolved anywhere, not just when called:
 
 ```
 map_ints_to_ints = map{INT, INT}
+```
+
+### File structure
+
+Azor files are simply a sequence of declarations. The order of declarations does not impact execution of the file in any way. 
+Azor does not support modules, namespaces, or file imports.
+
+For a file to be executable, it must declare a function called `main` of type `INT(args : [[INT]])`.
+Executing an Azor file involves passing the command-line arguments to `main`, evaluating the function,
+and exiting with its return value as the exit status.
+
+Although the full file is type-checked prior to execution, evaluation is lazy, meaning that e.g. executing the following file would not
+result in an infinite loop:
+
+```
+foo : BOOL = foo
+
+main : INT = 0
 ```
 
 ### Features I have considered and (for the time being) declined to add

@@ -8,9 +8,11 @@ fib : INT(n : INT) = let (l, r) <- fibHelper(n) in l
 
 square(n : INT) = n ** 2
 
-ident{A}(a : A) = a
+ident{A}(a : A) = a  # aaaAaaAAAa
 
 map_ints_to_ints = map{INT, INT}
+
+# Here be comment
 
 main(args: [[INT]])
   = let squares <- map_ints_to_ints(square, range(-10, 10)) in
