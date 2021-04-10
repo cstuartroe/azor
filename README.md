@@ -10,9 +10,15 @@ Currently, the only implementation is in [Python](https://github.com/cstuartroe/
 
 I have plans to attempt implementations in Rust as well as at least one of Haskell, OCaml, and/or Idris.
 
+## Tooling
+
+I have built [an Atom syntax highlighting package for Azor](https://github.com/cstuartroe/language-azor)!
+In Atom, navigate to Settings > Install and search for `language-azor`.
+Let me know if you have any issues installing or using it.
+
 ## Features
 
-Azor is a statically-typed impure functional language. It is impure in the sense that it exposes three functions 
+Azor is a statically-typed impure functional language. It is impure in the sense that it exposes three functions
 in the [standard library](#standard-library) which have side effects or whose output is not deterministic from the
 set of arguments.
 
@@ -115,7 +121,7 @@ map_ints_to_ints = map{INT, INT}
 
 ### File structure
 
-Azor files are simply a sequence of declarations. The order of declarations does not impact execution of the file in any way. 
+Azor files are simply a sequence of declarations. The order of declarations does not impact execution of the file in any way.
 Azor does not support modules, namespaces, or file imports.
 
 For a file to be executable, it must declare a function called `main` of type `INT(args : [[INT]])`.
@@ -133,7 +139,7 @@ main : INT = 0
 
 ### Features I have considered and (for the time being) declined to add
 
-Deciding which features to include in Azor was a balancing act between making the language useful and making it easy to implement. 
+Deciding which features to include in Azor was a balancing act between making the language useful and making it easy to implement.
 I think the latter consideration should be more heavily prioritized for this project, so I tried to show restraint in adding features,
 but I don't enjoy making a completely useless language so some features made it off this list (e.g., generics) or might at some point.
 
@@ -156,7 +162,7 @@ TYPE two_things_type = (INT, BOOL)
 
 * Function caching
   * Since Azor is not a pure functional language, it could never be implemented with as much compiler trickery as a language like Haskell. In
-    particular, because some functions like `print` have side effects, not all function return values can simply be cached. It should be 
+    particular, because some functions like `print` have side effects, not all function return values can simply be cached. It should be
     possible for an Azor compiler to statically analyze which functions make downstream use of impure functions, and cache any that don't. That
     said, I doubt I'll ever do it. It seems a little bit difficult, and too ripe for unexpected behavior.
 
