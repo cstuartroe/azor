@@ -1,0 +1,84 @@
+welcome_phrase = "Welcome to Blackjack!\n"
+
+number_cards
+  = let nums <- range(2, 11) in
+    zip{[INT], INT}(map{INT, [INT]}(i2s, nums), nums)
+
+face_cards = [
+  ("Jack", 10),
+  ("Queen", 10),
+  ("King", 10),
+]
+
+CARDS = concat{([INT], INT)}(
+  number_cards,
+  face_cards,
+)
+
+get_card : ([INT], INT)()
+  = if card ~ _ <- at{([INT], INT)}(CARDS, rand(len{([INT], INT)}(CARDS)))
+    then card
+    else ("error", 0) # this should never be returned
+
+add_card(card: ([INT], INT), sum: INT)
+  = let (name, val) <- card in sum + val
+
+total_value : INT(cards: [([INT], INT)]) = reduce{([INT], INT), INT}(add_card, cards, 0)
+
+bust_limit = 21
+
+get_hits : [([INT], INT)](cards: [([INT], INT)])
+  = let _ <- println("Take another card? ") in
+    if c ~ cs <- input()
+    then if c == 'y'
+         then let (new_card_name, new_card_val) <- get_card() in
+              let __ <- println(scat("You drew a ", new_card_name)) in
+              let new_cards <- (new_card_name, new_card_val) ~ cards in
+              if total_value(new_cards) > bust_limit
+              then new_cards
+              else get_hits(new_cards)
+         else cards
+    else cards
+
+
+win_hand : INT(bet: INT)
+  = let (card1_name, card1_val) <- get_card() in
+    let (card2_name, card2_val) <- get_card() in
+    let _ <- println(
+      scat("You drew a ", scat(card1_name, scat(" and a ", card2_name)))
+    ) in
+    let all_cards <- get_hits([(card1_name, card1_val), (card2_name, card2_val)]) in
+    let player_score <- total_value(all_cards) in
+    let opponent_score <- rand(8) + 16 in
+    let __ <- println(scat("Your score was ", i2s(player_score))) in
+    let ___ <- println(scat("Opponent score was ", i2s(opponent_score))) in
+    if (player_score > bust_limit) & (opponent_score > bust_limit)
+      then let ____ <- println("You both busted! What fools!") in 0
+    else if player_score > bust_limit
+      then let ____ <- println("You busted!") in -bet
+    else if opponent_score > bust_limit
+      then let ____ <- println("Opponent busted!") in bet
+    else if player_score < opponent_score
+      then let ____ <- println("Opponent scored higher. Rats!") in -bet
+    else if player_score > opponent_score
+      then let ____ <- println("You scored higher. Nice!") in bet
+    else
+      let ____ <- println("It's a draw!") in 0
+
+play_hand : INT(money : INT)
+  = let _ <- println(concat{INT}("Money: $", i2s(money))) in
+    let __ <- print("How much would you like to wager? $") in
+    if wager ~ tail <- parseUInt(input())
+    then let net_win <- win_hand(wager) in money + net_win
+    else let ___ <- println("Invalid unsigned integer") in money
+
+play_blackjack : ()(money : INT)
+  = let new_money <- play_hand(money) in
+    if new_money > 0
+    then play_blackjack(new_money)
+    else print("You lose!")
+
+main : INT(args : [[INT]])
+  = let _ <- print(welcome_phrase) in
+    let __ <- play_blackjack(1000) in
+    0
