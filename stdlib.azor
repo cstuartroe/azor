@@ -24,10 +24,9 @@ zip{A, B} : [(A, B)](l1 : [A], l2 : [B])
          else [] of (A, B)
     else [] of (A, B)
 
-println : [INT](s : [INT])
+println : ()(s : [INT])
   = let _ <- print(s) in
-    let __ <- print([13, 10]) in
-    s
+    print("\r\n")
 
 reverseHelper{A} : [A](l1 : [A], l2 : [A])
   = if head ~ tail <- l1
@@ -45,7 +44,10 @@ i2sHelper : [INT](n : INT)
     then [lastDigit + asciiDigitOffset]
     else (lastDigit + asciiDigitOffset) ~ i2sHelper(n / 10)
 
-i2s : [INT](n : INT) = reverse{INT}(i2sHelper(n))
+i2s : [INT](n : INT)
+  = if n < 0
+    then '-' ~ reverse{INT}(i2sHelper(-n))
+    else reverse{INT}(i2sHelper(n))
 
 b2s : [INT](b: BOOL) = if b then "true" else "false"
 
@@ -53,6 +55,8 @@ concat{A} : [A](l1 : [A], l2 : [A])
   = if first ~ rest <- l1
     then first ~ concat{A}(rest, l2)
     else l2
+
+scat = concat{INT}
 
 range : [INT](start : INT, end : INT)
   = if start == end
@@ -69,10 +73,10 @@ any : BOOL(l : [BOOL])
     then if head then true else any(tail)
     else false
 
-list_eq{A} : BOOL(l1 : [A], l2 : [A], equality : BOOL(A, A))
+list_eq{A} : BOOL(l1 : [A], l2 : [A], equal : BOOL(A, A))
   = if head1 ~ tail1 <- l1
     then if head2 ~ tail2 <- l2
-         then equality(head1, head2) & list_eq{A}(tail1, tail2, equality)
+         then equal(head1, head2) & list_eq{A}(tail1, tail2, equal)
          else false
     else if head2 ~ tail2 <- l2
          then false
@@ -86,10 +90,78 @@ sjoin : [INT](l: [[INT]], joiner: [INT])
     else ""
 
 l2s{A} : [INT](l: [A], stringifier: [INT](A))
-  = concat{INT}(
-      "[",
-      concat{INT}(
-        sjoin(map{A, [INT]}(stringifier, l), ", "),
-        "]",
-      ),
+  = '[' ~ concat{INT}(
+      sjoin(map{A, [INT]}(stringifier, l), ", "),
+      "]",
     )
+
+repeat{A} : [A](a : A, times : INT)
+  = if times <= 0
+    then [] of A
+    else a ~ repeat{A}(a, times - 1)
+
+repeatF{A} : [A](a : A(), times : INT)
+  = if times <= 0
+    then [] of A
+    else a() ~ repeatF{A}(a, times - 1)
+
+len{A} : INT(l : [A])
+  = if head ~ tail <- l
+    then 1 + len{A}(tail)
+    else 0
+
+at{A} : [A](l : [A], i : INT)
+  = if head ~ tail <- l
+    then if i == 0
+         then [head]
+         else at{A}(tail, i - 1)
+    else [] of A
+
+index{A} : INT(l : [A], element : A, equal: BOOL(A, A))
+  = if head ~ tail <- l
+    then if equal(head, element)
+         then 0
+         else let i <- index{A}(tail, element, equal) in
+              if i == -1 then i else i + 1
+    else -1
+
+find{K, V} : [V](l : [(K, V)], key: K, equal: BOOL(K, K))
+  = if head ~ tail <- l
+    then let (_k, _v) <- head in
+         if equal(_k, key)
+         then [_v]
+         else find{K, V}(tail, key, equal)
+    else [] of V
+
+intEq(m : INT, n : INT) = m == n
+
+parseUIntHelper : [INT](s : [INT], n : INT)
+  = if d ~ ds <- s
+    then let digit_val <- d - asciiDigitOffset in
+         if (0 <= digit_val) & (9 >= digit_val)
+         then parseUIntHelper(ds, digit_val + (10 * n))
+         else [] of INT
+    else [n]
+
+parseUInt : [INT](s : [INT])
+  = if d ~ ds <- s
+    then if d == (0 + asciiDigitOffset)
+         then if d2 ~ ds2 <- ds
+              then [] of INT
+              else [0]
+         else parseUIntHelper(s, 0)
+    else [] of INT
+
+parseInt : [INT](s : [INT])
+  = if sign ~ digits <- s
+    then if sign == '-'
+         then if num ~ _ <- parseUInt(digits)
+              then [-num]
+              else [] of INT
+         else parseUInt(s)
+    else [] of INT
+
+rpad : [INT](s : [INT], length : INT, c : INT)
+  = if head ~ tail <- s
+    then head ~ rpad(tail, length - 1, c)
+    else repeat{INT}(c, length)
