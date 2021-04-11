@@ -1,0 +1,14 @@
+validate_nums : ()(nums : [[INT]])
+  = if num_string ~ tail <- nums
+    then let _ <- print(rpad(num_string, 10, ' ')) in
+         let __ <- if num ~ empty <- parseInt(num_string)
+                   then println(" is a valid integer")
+                   else println(" is not a valid integer") in
+         validate_nums(tail)
+    else ()
+
+main(args : [[INT]])
+  = let _ <- if n ~ ns <- args
+             then validate_nums(args)
+             else println("Please pass one or more numbers as command-line arguments") in
+    0
