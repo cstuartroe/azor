@@ -1,0 +1,80 @@
+rands(l : [[INT]])
+  = let res <- at{[INT]}(l, rand(len{[INT]}(l)))
+    in if out ~ _ <- res
+       then out
+       else ""
+
+P = [
+  "p",
+  "p",
+  "p",
+  "p",
+  "p",
+  "pp",
+  "b",
+  [127345], # B emoji
+]
+
+UNICODE_RANGES = [
+  (975, 1024),
+  (1808, 1840),
+  (1377, 1416),
+  (73664, 73714),
+  (71872, 71923),
+  (4304, 4351),
+  (8240, 8287),
+  (8240, 8287),
+  (8592, 8704),
+]
+
+randsymbol()
+  = if res ~ _ <- at{(INT, INT)}(UNICODE_RANGES, rand(len{(INT,INT)}(UNICODE_RANGES)))
+    then let (begin, end) <- res
+         in begin + rand(end - begin)
+    else 1758 # Rub el Hizb
+
+C = [
+  "c",
+  "c",
+  "c",
+  "c",
+  "k",
+  "k'",
+  "kh",
+]
+
+W = [
+  "w",
+  "w",
+  "w",
+  "w",
+  "w",
+  "vv",
+  [365], # esperanto u
+]
+
+EE = [
+  "ee",
+  "eee",
+  "ei",
+  "ie",
+  "ii",
+  [275], # e with macron
+]
+
+main(args: [[INT]])
+  = let sym <- randsymbol() in
+    let __ <- println(i2s(sym)) in
+    let _ <- println(sjoin(
+      [
+        rands(P),
+        [sym],
+        rands(C),
+        "an ",
+        rands(W),
+        rands(EE),
+        "nd"
+      ],
+      "",
+    ))
+    in 0
